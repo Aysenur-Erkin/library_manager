@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8"><title>Loans</title>
+  <link rel="stylesheet" href="/ui/assets/styles.css?v=1"/>
+</head><body>
+<header>
+  <h1>Loans</h1>
+  <nav>
+    <a href="/ui/">Home</a>
+    <a href="/ui/pages/users.html">Users</a>
+    <a href="/ui/pages/authors.html">Authors</a>
+    <a href="/ui/pages/books.html">Books</a>
+  </nav>
+</header>
+<main>
+  <div class="card">
+    <h3>Create Loan</h3>
+    <label>User ID <input id="user_id" type="number"></label>
+    <label>Book ID <input id="book_id" type="number"></label>
+    <button id="create">Loan</button>
+  </div>
+  <div class="card">
+    <h3>Loans</h3>
+    <table>
+      <thead><tr><th>ID</th><th>User</th><th>Book</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+<script src="/ui/assets/ui.js"></script>
+<script>
+const API = window.location.origin;
+function authHeaders(){ const t=localStorage.getItem('token'); return t?{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}:{'Content-Type':'application/json'}; }
+async function load(){
+  const res=await fetch(`${API}/loans/`,{headers:authHeaders()}); const data=res.ok?await res.json():[];
+  const rows=document.getElementById('rows'); rows.innerHTML='';
+  data.forEach(l=>{ const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${l.id}</td><td>${l.user_id}</td><td>${l.book_id}</td><td>${l.status}</td>
+    <td>${l.status==='ongoing'?`<button data-id="${l.id}">Return</button>`:''}</td>`; rows.appendChild(tr); });
+  rows.querySelectorAll('button').forEach(btn=>{
+    btn.onclick=async()=>{ const id=btn.getAttribute('data-id');
+      const r=await fetch(`${API}/loans/${id}/return`,{method:'POST',headers:authHeaders(),body:JSON.stringify({})});
+      await load(); if(r.ok) toast('Book returned','success'); else toast('Failed','error');
+    };
+  });
+}
+load();
+document.getElementById('create').onclick=async()=>{
+  const payload={ user_id:Number(user_id.value), book_id:Number(book_id.value) };
+  const res=await fetch(`${API}/loans/`,{method:'POST',headers:authHeaders(),body:JSON.stringify(payload)});
+  if(res.ok){ await load(); toast('Loan created','success'); } else { toast('Login first or book unavailable','warn'); }
+};
+window.addEventListener('load', async () => {
+  try{ const r = await fetch(API + '/health', {cache:'no-store'}); if(!r.ok) throw new Error('health not ok'); }
+  catch(e){ toast('API unreachable. Check server/port.','error',{ttl:5000}); }
+});
+</script>
+</body></html>

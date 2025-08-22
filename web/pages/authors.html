@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8"><title>Authors</title>
+  <link rel="stylesheet" href="/ui/assets/styles.css?v=1"/>
+</head><body>
+<header>
+  <h1>Authors</h1>
+  <nav>
+    <a href="/ui/">Home</a>
+    <a href="/ui/pages/users.html">Users</a>
+    <a href="/ui/pages/books.html">Books</a>
+    <a href="/ui/pages/loans.html">Loans</a>
+  </nav>
+</header>
+<main>
+  <div class="card">
+    <h3>Create Author</h3>
+    <label>Name <input id="name"></label>
+    <label>Bio <input id="bio"></label>
+    <button id="create">Create</button>
+  </div>
+  <div class="card">
+    <h3>Authors</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Biography</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+<script src="/ui/assets/ui.js"></script>
+<script>
+const API = window.location.origin;
+function authHeaders(){ const t=localStorage.getItem('token'); return t?{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}:{'Content-Type':'application/json'}; }
+async function load(){
+  const res=await fetch(`${API}/authors/`); const data=await res.json();
+  const rows=document.getElementById('rows'); rows.innerHTML='';
+  data.forEach(a=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${a.id}</td><td>${a.name}</td><td>${a.biography ?? ""}</td>`; rows.appendChild(tr); });
+}
+load();
+document.getElementById('create').onclick=async()=>{
+  const payload={name:document.getElementById('name').value,biography:document.getElementById('bio').value};
+  const res=await fetch(`${API}/authors/`,{method:'POST',headers:authHeaders(),body:JSON.stringify(payload)});
+  if(res.ok){ await load(); toast('Author created','success'); } else { toast('Failed (login first?)','warn'); }
+};
+window.addEventListener('load', async () => {
+  try{ const r = await fetch(API + '/health', {cache:'no-store'}); if(!r.ok) throw new Error('health not ok'); }
+  catch(e){ toast('API unreachable. Check server/port.','error',{ttl:5000}); }
+});
+</script>
+</body></html>

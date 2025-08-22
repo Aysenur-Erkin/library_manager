@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8"><title>Users</title>
+  <link rel="stylesheet" href="/ui/assets/styles.css?v=1"/>
+</head><body>
+<header>
+  <h1>Users</h1>
+  <nav>
+    <a href="/ui/">Home</a>
+    <a href="/ui/pages/authors.html">Authors</a>
+    <a href="/ui/pages/books.html">Books</a>
+    <a href="/ui/pages/loans.html">Loans</a>
+  </nav>
+</header>
+<main>
+  <div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div>
+      <h3>Register</h3>
+      <label>Email <input id="reg_email" type="email"></label>
+      <label>Full name <input id="reg_name" type="text"></label>
+      <label>Password <input id="reg_password" type="password"></label>
+      <button id="btn_register">Register</button>
+    </div>
+    <div>
+      <h3>Login</h3>
+      <label>Email <input id="login_email" type="email"></label>
+      <label>Password <input id="login_password" type="password"></label>
+      <button id="btn_login">Login</button>
+      <p id="me"></p>
+    </div>
+  </div>
+</main>
+<script src="/ui/assets/ui.js"></script>
+<script>
+const API = window.location.origin;
+function authHeaders(){ const t=localStorage.getItem('token'); return t?{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}:{'Content-Type':'application/json'}; }
+async function login(email,password){
+  const body=new URLSearchParams(); body.append('username',email); body.append('password',password);
+  const r=await fetch(`${API}/auth/login`,{method:'POST',body}); if(!r.ok) throw new Error('Login failed'); const d=await r.json(); localStorage.setItem('token',d.access_token); return d;
+}
+async function getMe(){ const r=await fetch(`${API}/users/me`,{headers:authHeaders()}); return r.ok? r.json():null; }
+document.getElementById('btn_register').onclick=async()=>{
+  const payload={email:reg_email.value,full_name:reg_name.value,password:reg_password.value};
+  const r=await fetch(`${API}/users/register`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(r.ok) toast('Registered!','success'); else toast('Register failed','error');
+};
+document.getElementById('btn_login').onclick=async()=>{
+  try{ await login(login_email.value,login_password.value);
+       const me=await getMe(); document.getElementById('me').textContent=me?`Logged in as ${me.email}`:'Not logged in';
+       toast('Logged in','success'); } catch(e){ toast(e.message,'error'); }
+};
+window.addEventListener('load', async () => {
+  try{ const r = await fetch(API + '/health', {cache:'no-store'}); if(!r.ok) throw new Error('health not ok'); }
+  catch(e){ toast('API unreachable. Check server/port.','error',{ttl:5000}); }
+});
+</script>
+</body></html>

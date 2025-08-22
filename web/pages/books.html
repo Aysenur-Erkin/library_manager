@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8"><title>Books</title>
+  <link rel="stylesheet" href="/ui/assets/styles.css?v=1"/>
+</head><body>
+<header>
+  <h1>Books</h1>
+  <nav>
+    <a href="/ui/">Home</a>
+    <a href="/ui/pages/users.html">Users</a>
+    <a href="/ui/pages/authors.html">Authors</a>
+    <a href="/ui/pages/loans.html">Loans</a>
+  </nav>
+</header>
+<main>
+  <div class="card">
+    <h3>Create Book</h3>
+    <label>Title <input id="title"></label>
+    <label>Description <input id="desc"></label>
+    <label>Author ID <input id="author_id" type="number"></label>
+    <label>ISBN <input id="isbn"></label>
+    <label>Year <input id="year" type="number"></label>
+    <label>Copies Total <input id="total" type="number" value="1"></label>
+    <button id="create">Create</button>
+  </div>
+  <div class="card">
+    <h3>Books</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Title</th><th>Author</th><th>Avail/Total</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+<script src="/ui/assets/ui.js"></script>
+<script>
+const API = window.location.origin;
+function authHeaders(){ const t=localStorage.getItem('token'); return t?{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}:{'Content-Type':'application/json'}; }
+async function load(){
+  const res=await fetch(`${API}/books/`); const data=await res.json();
+  const rows=document.getElementById('rows'); rows.innerHTML='';
+  data.forEach(b=>{ const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${b.id}</td><td>${b.title}</td><td>${b.author_id}</td><td>${b.copies_available}/${b.copies_total}</td>`; rows.appendChild(tr); });
+}
+load();
+document.getElementById('create').onclick=async()=>{
+  const payload={ title:title.value, description:desc.value, author_id:Number(author_id.value),
+    isbn:isbn.value, published_year:Number(year.value), copies_total:Number(total.value),
+    copies_available:Number(total.value)};
+  const res=await fetch(`${API}/books/`,{method:'POST',headers:authHeaders(),body:JSON.stringify(payload)});
+  if(res.ok){ await load(); toast('Book created','success'); } else { toast('Failed (login first?)','warn'); }
+};
+window.addEventListener('load', async () => {
+  try{ const r = await fetch(API + '/health', {cache:'no-store'}); if(!r.ok) throw new Error('health not ok'); }
+  catch(e){ toast('API unreachable. Check server/port.','error',{ttl:5000}); }
+});
+</script>
+</body></html>
