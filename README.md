@@ -1,6 +1,6 @@
 # Library Manager
 
-“Library Manager” is a **library tracking system**. It records books, authors, and loan operations (borrow/return). The **backend** stores data, enforces rules, and exposes an **API**; the **frontend** is a simple web UI where users click buttons, submit forms, and see results. The goal is a foundation that’s **easy to learn** yet **scalable** to real‑world needs.
+“Library Manager” is a **library tracking system**. It records books, authors, and loan operations (borrow/return). The **backend** stores data, enforces rules, and exposes an **API**; the **frontend** is a simple web UI where users click buttons, submit forms, and see results.
 
 ## Quick Start
 
