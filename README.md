@@ -2,8 +2,6 @@
 
 “Library Manager” is a **library tracking system**. It records books, authors, and loan operations (borrow/return). The **backend** stores data, enforces rules, and exposes an **API**; the **frontend** is a simple web UI where users click buttons, submit forms, and see results. The goal is a foundation that’s **easy to learn** yet **scalable** to real‑world needs.
 
----
-
 ## Quick Start
 
 ```bash
@@ -144,8 +142,6 @@ These rules live in `services/` (e.g., `loan_service.py`), keeping endpoints cle
 * **DTOs (Pydantic)** for clear input/output contracts and validation.
 * **Service layer** centralizes business logic; avoids duplication.
 * **Dependency Injection** (FastAPI `Depends`) injects DB session/current user.
-* **Tip**: On SQLAlchemy 2.x prefer `Session.get(Model, id)` over deprecated `Query.get(...)`.
-
 ---
 
 ## How the Frontend Works
