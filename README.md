@@ -68,31 +68,54 @@ Think of three layers:
 **Folder tree**
 
 ```
+library_manager/
+├─ .idea/
+├─ alembic/
+│  ├─ env.py
+│  └─ versions/
 ├─ src/
 │  └─ api/
-│     ├─ main.py                 
-│     ├─ settings.py             
-│     ├─ db.py                   
-│     ├─ deps.py                 
-│     ├─ models/                 
-│     ├─ schemas/                
-│     ├─ services/              
-│     └─ routers/                
-│
-├─ web/                         
+│     ├─ main.py
+│     ├─ settings.py
+│     ├─ db.py
+│     ├─ deps.py
+│     ├─ models/
+│     │  ├─ user.py
+│     │  ├─ author.py
+│     │  ├─ book.py
+│     │  └─ loan.py
+│     ├─ schemas/
+│     │  ├─ user.py
+│     │  ├─ author.py
+│     │  ├─ book.py
+│     │  └─ loan.py
+│     ├─ services/
+│     └─ routers/
+│        ├─ auth.py
+│        ├─ users.py
+│        ├─ authors.py
+│        ├─ books.py
+│        └─ loans.py
+├─ tests/
+├─ web/
 │  ├─ index.html
 │  ├─ assets/
 │  │  ├─ styles.css
 │  │  └─ ui.js
-│  └─ pages/ (users/authors/books/loans)
-│
-├─ alembic/                     
-│  ├─ env.py
-│  └─ versions/<timestamp>_init.py
-├─ requirements.txt
+│  └─ pages/
+│     ├─ users.html
+│     ├─ authors.html
+│     ├─ books.html
+│     └─ loans.html
 ├─ .env.example
+├─ .gitignore
+├─ LICENSE
+├─ README.md
+├─ UI.png
+├─ docs.png
 ├─ alembic.ini
-└─ README.md
+└─ requirements.txt
+
 ```
 
 ---
