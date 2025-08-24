@@ -179,23 +179,6 @@ Schemas evolve. **Alembic** records changes as **migrations** so all environment
 
 ---
 
-## Security Basics
-
-* Never store plaintext passwords — use **bcrypt** hashes.
-* Keep the JWT **`SECRET_KEY`** strong and private; rotate on compromise.
-* Use **CORS** only if you need to expose the API to other origins.
-* In production, terminate **HTTPS** at a reverse proxy and consider **rate limiting**.
-
----
-
-## Performance & Scalability
-
-* Dev: **SQLite** (simple and fast). Prod: **Postgres** with a connection pool.
-* Add DB **indexes** for frequent lookups (ISBN, `author_id`, `user_id`).
-* Avoid **N+1** queries; use **eager loading** when needed.
-
----
-
 ## Common Issues & Quick Fixes
 
 * **`/docs` or `/ui` stuck on “Loading…”** → often missing `python-multipart`. Install it. On Windows, if localhost is blocked by proxy/VPN, run with `--host 0.0.0.0 --port 9000` and open `http://localhost:9000/ui`.
