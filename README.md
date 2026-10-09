@@ -32,5 +32,3 @@ tests/
 ```
 
 If `/docs` stays on Loading, install `python-multipart`. If localhost hangs on Windows, keep `--host 0.0.0.0 --port 9000`. CSS not updating is usually cache. Ctrl+F5.
-
-MIT. See LICENSE.
