@@ -4,11 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from .settings import settings
-from .db import Base, engine
 from .routers import users, books, authors, loans
 from .routers import auth as auth_router
-
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="library_manager", version="0.1.0")
 
