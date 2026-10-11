@@ -2,6 +2,8 @@ from sqlalchemy import String, Integer, DateTime, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from ..db import Base
+
+
 class Book(Base):
     __tablename__ = "books"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)

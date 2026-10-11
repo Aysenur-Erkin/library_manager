@@ -2,6 +2,8 @@ from sqlalchemy import String, Integer, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from ..db import Base
+
+
 class Author(Base):
     __tablename__ = "authors"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
