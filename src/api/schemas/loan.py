@@ -1,12 +1,15 @@
 from pydantic import BaseModel
 from datetime import date
 
+
 class LoanCreate(BaseModel):
     book_id: int
     due_date: date | None = None
 
+
 class LoanReturn(BaseModel):
     return_date: date | None = None
+
 
 class LoanOut(BaseModel):
     id: int
