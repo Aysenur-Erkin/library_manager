@@ -30,20 +30,35 @@
 <script>
 const API = window.location.origin;
 function authHeaders(){ const t=localStorage.getItem('token'); return t?{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}:{'Content-Type':'application/json'}; }
+function cell(text){
+  const td = document.createElement('td');
+  td.textContent = text;
+  return td;
+}
 async function load(){
-  const res=await fetch(`${API}/authors/`); const data=await res.json();
-  const rows=document.getElementById('rows'); rows.innerHTML='';
-  data.forEach(a=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${a.id}</td><td>${a.name}</td><td>${a.biography ?? ""}</td>`; rows.appendChild(tr); });
+  const res = await fetch(`${API}/authors/`);
+  const data = await res.json();
+  const rows = document.getElementById('rows');
+  rows.replaceChildren();
+  data.forEach(a => {
+    const tr = document.createElement('tr');
+    tr.append(cell(a.id), cell(a.name), cell(a.biography ?? ''));
+    rows.appendChild(tr);
+  });
 }
 load();
-document.getElementById('create').onclick=async()=>{
-  const payload={name:document.getElementById('name').value,biography:document.getElementById('bio').value};
-  const res=await fetch(`${API}/authors/`,{method:'POST',headers:authHeaders(),body:JSON.stringify(payload)});
-  if(res.ok){ await load(); toast('Author created','success'); } else { toast('Failed (login first?)','warn'); }
+document.getElementById('create').onclick = async () => {
+  const payload = {
+    name: document.getElementById('name').value,
+    biography: document.getElementById('bio').value || null
+  };
+  const res = await fetch(`${API}/authors/`, {method:'POST', headers:authHeaders(), body:JSON.stringify(payload)});
+  if (res.ok) { await load(); toast('Author created', 'success'); }
+  else { toast('Failed (login first?)', 'warn'); }
 };
 window.addEventListener('load', async () => {
-  try{ const r = await fetch(API + '/health', {cache:'no-store'}); if(!r.ok) throw new Error('health not ok'); }
-  catch(e){ toast('API unreachable. Check server/port.','error',{ttl:5000}); }
+  try { const r = await fetch(API + '/health', {cache:'no-store'}); if (!r.ok) throw new Error('health not ok'); }
+  catch (e) { toast('API unreachable. Check server/port.', 'error', {ttl:5000}); }
 });
 </script>
 </body></html>

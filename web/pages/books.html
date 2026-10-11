@@ -34,23 +34,45 @@
 <script>
 const API = window.location.origin;
 function authHeaders(){ const t=localStorage.getItem('token'); return t?{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}:{'Content-Type':'application/json'}; }
+function cell(text){
+  const td = document.createElement('td');
+  td.textContent = text;
+  return td;
+}
 async function load(){
-  const res=await fetch(`${API}/books/`); const data=await res.json();
-  const rows=document.getElementById('rows'); rows.innerHTML='';
-  data.forEach(b=>{ const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${b.id}</td><td>${b.title}</td><td>${b.author_id}</td><td>${b.copies_available}/${b.copies_total}</td>`; rows.appendChild(tr); });
+  const res = await fetch(`${API}/books/`);
+  const data = await res.json();
+  const rows = document.getElementById('rows');
+  rows.replaceChildren();
+  data.forEach(b => {
+    const tr = document.createElement('tr');
+    tr.append(
+      cell(b.id),
+      cell(b.title),
+      cell(b.author_id),
+      cell(b.copies_available + '/' + b.copies_total)
+    );
+    rows.appendChild(tr);
+  });
 }
 load();
-document.getElementById('create').onclick=async()=>{
-  const payload={ title:title.value, description:desc.value, author_id:Number(author_id.value),
-    isbn:isbn.value, published_year:Number(year.value), copies_total:Number(total.value),
-    copies_available:Number(total.value)};
-  const res=await fetch(`${API}/books/`,{method:'POST',headers:authHeaders(),body:JSON.stringify(payload)});
-  if(res.ok){ await load(); toast('Book created','success'); } else { toast('Failed (login first?)','warn'); }
+document.getElementById('create').onclick = async () => {
+  const payload = {
+    title: title.value,
+    description: desc.value,
+    author_id: Number(author_id.value),
+    isbn: isbn.value || null,
+    published_year: year.value ? Number(year.value) : null,
+    copies_total: Number(total.value),
+    copies_available: Number(total.value)
+  };
+  const res = await fetch(`${API}/books/`, {method:'POST', headers:authHeaders(), body:JSON.stringify(payload)});
+  if (res.ok) { await load(); toast('Book created', 'success'); }
+  else { toast('Failed (login first?)', 'warn'); }
 };
 window.addEventListener('load', async () => {
-  try{ const r = await fetch(API + '/health', {cache:'no-store'}); if(!r.ok) throw new Error('health not ok'); }
-  catch(e){ toast('API unreachable. Check server/port.','error',{ttl:5000}); }
+  try { const r = await fetch(API + '/health', {cache:'no-store'}); if (!r.ok) throw new Error('health not ok'); }
+  catch (e) { toast('API unreachable. Check server/port.', 'error', {ttl:5000}); }
 });
 </script>
 </body></html>
