@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from ..models.loan import Loan
 from ..models.book import Book
 
-def create_loan(db: Session, user_id: int, book_id: int, due_date: date | None = None) -> Loan | None:
+
+def create_loan(
+    db: Session, user_id: int, book_id: int, due_date: date | None = None
+) -> Loan | None:
     book = db.get(Book, book_id)
     if not book or book.copies_available <= 0:
         return None
@@ -13,6 +16,7 @@ def create_loan(db: Session, user_id: int, book_id: int, due_date: date | None =
     db.commit()
     db.refresh(loan)
     return loan
+
 
 def return_loan(db: Session, loan_id: int, return_date: date | None = None):
     loan = db.get(Loan, loan_id)
