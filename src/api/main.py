@@ -21,13 +21,16 @@ web_dir = Path(__file__).resolve().parents[2] / "web"
 if web_dir.exists():
     app.mount("/ui", StaticFiles(directory=str(web_dir), html=True), name="ui")
 
+
 @app.get("/")
 def root_redirect():
     return RedirectResponse(url="/docs")
 
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
 
 app.include_router(auth_router.router)
 app.include_router(users.router)
